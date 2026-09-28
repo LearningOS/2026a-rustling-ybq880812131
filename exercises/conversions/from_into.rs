@@ -42,8 +42,8 @@ impl Default for Person {
 
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
-        let parts = s.split(',');
-        if parts.len() != 2 {
+        let mut parts = s.split(',');
+        if parts.clone().count() != 2 {
             return Person::default();
         }
         let name = parts.next().unwrap();
@@ -51,7 +51,9 @@ impl From<&str> for Person {
             return Person::default();
         }
         let age = parts.next().unwrap();
-        let age = age.parse::<usize>().unwrap_or(0);
+        let Ok(age) = age.parse::<usize>() else {
+            return Person::default();
+        };
         Person {
             name: name.to_string(),
             age,
